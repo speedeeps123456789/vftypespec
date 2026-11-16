@@ -168,6 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const sliderWidth = axes.length === 1 ? '150px' : (axes.length === 2 ? '115px' : '88px');
     const initialVar = axes.map(a => `'${a.tag}' ${a.defaultValue}`).join(', ');
     const chars = cfg.charset && cfg.charset.length ? cfg.charset : DEFAULT_CHARSET;
+    const uppercaseOnly = Boolean(cfg.uppercaseOnly);
     const strokeWidth = Number(cfg.strokeWidth || 0);
     const strokeColor = cfg.strokeColor || '#0000ff';
     const effectiveStrokeColor = strokeWidth > 0 ? strokeColor : 'transparent';
@@ -272,7 +273,7 @@ document.addEventListener('DOMContentLoaded', () => {
     .glyph-cell { display: inline-flex; align-items: center; justify-content: center; font-size: clamp(1.25rem, 2vw, 1.75rem); line-height: 1; min-height: 2.3rem; }
     .site-footer { width: 100%; max-width: 1080px; margin-top: 6rem; padding-top: 1.4rem; border-top: var(--rule-width) solid var(--rule-color); display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 1.5rem; font-size: 11px; }
     .footer-title { font-family: ${specimenFontFamily}; font-variation-settings: var(--vf-settings); font-size: 1.8rem; line-height: 1; }
-    html.is-cover, html.is-cover body { height: 100%; overflow: hidden; }
+${uppercaseOnly ? '    .hero-word, .specimen-text:not(.glyphs-overview), .footer-title { text-transform: uppercase; }\n' : ''}    html.is-cover, html.is-cover body { height: 100%; overflow: hidden; }
     html.is-cover .stage-frame, html.is-cover .specimen-section { display: none !important; }
     html.is-cover .center-stage { height: 100vh; min-height: 100vh; padding: 1.2rem; overflow: hidden; }
     @media (max-width: 768px) {
@@ -303,7 +304,7 @@ document.addEventListener('DOMContentLoaded', () => {
   <section class="specimen-section">
     <div class="specimen-container">
       <div class="specimen-block span-2"><div class="specimen-meta">72pt</div><p class="specimen-text size-72" contenteditable="true" spellcheck="false">Hamburgefontsiv</p></div>
-      <div class="specimen-block"><div class="specimen-meta">48pt</div><p class="specimen-text size-48" contenteditable="true" spellcheck="false">ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 0123456789</p></div>
+      <div class="specimen-block"><div class="specimen-meta">48pt</div><p class="specimen-text size-48" contenteditable="true" spellcheck="false">${uppercaseOnly ? 'ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789' : 'ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 0123456789'}</p></div>
       <div class="specimen-block"><div class="specimen-meta">32pt</div><p class="specimen-text size-32" contenteditable="true" spellcheck="false">The quick brown fox jumps over the lazy dog.<br>Sphinx of black quartz, judge my vow.</p></div>
       <div class="specimen-block"><div class="specimen-meta">20pt</div><p class="specimen-text size-20" contenteditable="true" spellcheck="false">Pack my box with five dozen liquor jugs. How vexingly quick daft zebras jump! Bright vixens jump; dozy fowl quack.</p></div>
       <div class="specimen-block"><div class="specimen-meta">14pt</div><p class="specimen-text size-14" contenteditable="true" spellcheck="false">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p></div>
@@ -597,6 +598,7 @@ document.addEventListener('DOMContentLoaded', () => {
     fontBuffer: null,
     axes: [{ tag: 'wght', min: 100, defaultValue: 400, max: 900 }],
     charset: DEFAULT_CHARSET,
+    uppercaseOnly: false,
     userEditedFontName: false
   };
 
@@ -710,6 +712,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const parsed = parseFontBuffer(buffer);
       state.axes = parsed.axes.length ? parsed.axes.slice(0, 3) : [{ tag: 'wght', min: 100, defaultValue: 400, max: 900 }];
       state.charset = parsed.chars.length ? parsed.chars : DEFAULT_CHARSET;
+      state.uppercaseOnly = parsed.chars.length > 0 && !parsed.chars.some(ch => ch >= 'a' && ch <= 'z');
 
       if (!state.userEditedFontName) {
         const cleanName = parsed.familyName || file.name.replace(/\.[^.]+$/, '');
