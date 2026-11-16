@@ -297,6 +297,7 @@ html, body {
 }
 
 .field input[type="text"],
+.field input[type="url"],
 .field select {
   width: 100%;
   padding: 5px 7px;
@@ -310,7 +311,8 @@ html, body {
   appearance: none;
 }
 
-.field input[type="text"] {
+.field input[type="text"],
+.field input[type="url"] {
   text-transform: none;
 }
 
@@ -325,6 +327,7 @@ html, body {
 }
 
 .field input[type="text"]:focus,
+.field input[type="url"]:focus,
 .field select:focus {
   background-color: var(--ui-muted-bg);
 }

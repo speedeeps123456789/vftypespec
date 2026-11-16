@@ -157,9 +157,18 @@ document.addEventListener('DOMContentLoaded', () => {
       .replace(/'/g, '&#39;');
   }
 
+  function normalizeLink(raw) {
+    const v = String(raw || '').trim();
+    if (!v) return '';
+    if (/^(https?:|mailto:)/i.test(v)) return v;
+    if (/^[a-z][a-z0-9+.-]*:/i.test(v)) return '';
+    return 'https://' + v.replace(/^\/+/, '');
+  }
+
   function buildSpecimenHTML(cfg) {
     const safeFont = escapeHtml(cfg.fontName || 'Specimen');
     const safeDesigner = escapeHtml(cfg.designerName || 'Name Surname');
+    const safeLink = escapeHtml(normalizeLink(cfg.designerLink));
     const safeDate = escapeHtml(cfg.dateText || '16.11.2026');
     const safePlace = escapeHtml(cfg.placeText || '');
     const safeExtra = escapeHtml(cfg.extraInfo || '');
@@ -228,6 +237,8 @@ document.addEventListener('DOMContentLoaded', () => {
     .stage-frame > :first-child { justify-self: start; }
     .stage-frame > :nth-child(2) { justify-self: center; }
     .stage-frame > :last-child { justify-self: end; }
+    .designer-link { color: inherit; text-decoration: none; pointer-events: auto; cursor: pointer; }
+    .designer-link:hover { text-decoration: underline; }
     .stage-frame.frame-top { position: fixed; top: 0; left: 0; z-index: 100; pointer-events: none; }
     .stage-frame.frame-bottom { position: absolute; bottom: 0; left: 0; z-index: 10; flex-wrap: wrap; }
     .frame-sliders { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 1.4rem; }
@@ -288,7 +299,7 @@ ${uppercaseOnly ? '    .hero-word, .specimen-text:not(.glyphs-overview), .footer
 <body>
   <main class="center-stage">
     <header class="stage-frame frame-top">
-      <div id="specDesigner">${safeDesigner}</div>
+      <div id="specDesigner">${safeLink ? `<a class="designer-link" href="${safeLink}" target="_blank" rel="noopener noreferrer">${safeDesigner}</a>` : safeDesigner}</div>
       <div id="specFontTop">${safeFont}</div>
       <div id="specDate">${safeDate}</div>
     </header>
@@ -565,6 +576,7 @@ ${uppercaseOnly ? '    .hero-word, .specimen-text:not(.glyphs-overview), .footer
   const strokeWidthVal = document.getElementById('strokeWidthVal');
 
   const designerNameInput = document.getElementById('designerNameInput');
+  const designerLinkInput = document.getElementById('designerLinkInput');
   const dateInput = document.getElementById('dateInput');
   const placeInput = document.getElementById('placeInput');
   const fontNameInput = document.getElementById('fontNameInput');
@@ -581,6 +593,7 @@ ${uppercaseOnly ? '    .hero-word, .specimen-text:not(.glyphs-overview), .footer
   const state = {
     fontName: 'Inter Variable',
     designerName: 'Name Surname',
+    designerLink: '',
     dateText: '16.11.2026',
     placeText: 'IED Torino',
     extraInfo: 'Laboratorio di sabotaggio tipografico',
@@ -657,7 +670,21 @@ ${uppercaseOnly ? '    .hero-word, .specimen-text:not(.glyphs-overview), .footer
     const elPlace = doc.getElementById('specPlace');
     const elFooterFont = doc.getElementById('specFooterFont');
     const elFooterMeta = doc.getElementById('specFooterMeta');
-    if (elDesigner) elDesigner.textContent = designer;
+    if (elDesigner) {
+      const href = normalizeLink(state.designerLink);
+      elDesigner.textContent = '';
+      if (href) {
+        const a = doc.createElement('a');
+        a.className = 'designer-link';
+        a.href = href;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.textContent = designer;
+        elDesigner.appendChild(a);
+      } else {
+        elDesigner.textContent = designer;
+      }
+    }
     if (elFontTop) elFontTop.textContent = fontName;
     if (elDate) elDate.textContent = dateText;
     if (elExtra) elExtra.textContent = extraInfo;
@@ -801,6 +828,7 @@ ${uppercaseOnly ? '    .hero-word, .specimen-text:not(.glyphs-overview), .footer
   });
 
   designerNameInput.addEventListener('input', (e) => { state.designerName = e.target.value; renderPreview(); });
+  designerLinkInput.addEventListener('input', (e) => { state.designerLink = e.target.value; renderPreview(); });
   dateInput.addEventListener('input', (e) => { state.dateText = e.target.value; renderPreview(); });
   placeInput.addEventListener('input', (e) => { state.placeText = e.target.value; renderPreview(); });
   fontNameInput.addEventListener('input', (e) => { state.userEditedFontName = true; state.fontName = e.target.value; renderPreview(); });
