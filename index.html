@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>vftypespec</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="app.css">
+</head>
+
+<body>
+  <div class="app-shell" id="appShell">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <span class="app-title">vftypespec</span>
+        <button type="button" class="btn-icon" id="collapseBtn" title="hide">←</button>
+      </div>
+
+      <div class="sidebar-scroll">
+        <section class="control-group">
+          <label class="group-label">variable font</label>
+          <div class="drop-zone" id="dropZone" tabindex="0" role="button" aria-label="upload variable font">
+            <input type="file" id="fontFileInput" accept=".ttf,.otf,.woff2,.woff" hidden>
+            <div class="drop-zone-text">
+              <strong>upload .ttf / .otf / .woff2</strong>
+              <span id="fontStatus">no font loaded</span>
+            </div>
+          </div>
+          <div class="axes-line" id="axesBadge" hidden></div>
+        </section>
+
+        <section class="control-group">
+          <div class="group-label-row">
+            <label class="group-label">colors</label>
+            <button type="button" class="btn-mini" id="swapColorsBtn">swap</button>
+          </div>
+          <div class="color-row">
+            <label class="color-input-wrap" title="background">
+              <input type="color" id="bgColorPicker" value="#000000" aria-label="background">
+              <input type="text" id="bgColorHex" value="#000000" maxlength="7" spellcheck="false"
+                aria-label="background hex">
+            </label>
+            <label class="color-input-wrap" title="text">
+              <input type="color" id="fgColorPicker" value="#ffffff" aria-label="text">
+              <input type="text" id="fgColorHex" value="#ffffff" maxlength="7" spellcheck="false" aria-label="text hex">
+            </label>
+          </div>
+          <div class="field stroke-field">
+            <span>stroke <em id="strokeWidthVal">0px</em></span>
+            <div class="stroke-inline">
+              <input type="range" id="strokeWidthInput" min="0" max="20" value="0" step="0.5" aria-label="stroke width">
+              <input type="color" id="strokeColorPicker" value="#0000ff" title="stroke color" aria-label="stroke color">
+            </div>
+          </div>
+        </section>
+
+        <section class="control-group">
+          <label class="group-label">info</label>
+          <div class="field-stack">
+            <label class="field">
+              <span>name</span>
+              <input type="text" id="designerNameInput" value="Name Surname" placeholder="Name Surname">
+            </label>
+            <label class="field">
+              <span>date / year</span>
+              <input type="text" id="dateInput" value="2026" placeholder="2026">
+            </label>
+            <label class="field">
+              <span>font name</span>
+              <input type="text" id="fontNameInput" value="Inter Variable" placeholder="Font Name">
+            </label>
+            <label class="field">
+              <span>extra info</span>
+              <input type="text" id="extraInfoInput" value="Variable Font" placeholder="Extra info">
+            </label>
+            <label class="field">
+              <span>center word(s)</span>
+              <input type="text" id="heroWordInput" value="Hamburgefontsiv" placeholder="up to 6 words">
+            </label>
+          </div>
+        </section>
+
+        <section class="control-group">
+          <label class="group-label">animation</label>
+          <div class="field-stack">
+            <label class="field">
+              <span>style</span>
+              <select id="animModeInput">
+                <option value="wave" selected>wave (left → right)</option>
+                <option value="pulse">pulse (all together)</option>
+                <option value="center">mirror (from center)</option>
+                <option value="random">random (per letter)</option>
+                <option value="none">static (slider only)</option>
+              </select>
+            </label>
+            <label class="field" id="animSpeedField">
+              <span>speed</span>
+              <input type="range" id="animSpeedInput" min="1" max="10" value="4" step="1">
+            </label>
+          </div>
+        </section>
+      </div>
+
+      <div class="sidebar-footer">
+        <button type="button" class="btn-primary" id="downloadBtn">download html</button>
+        <button type="button" class="btn-secondary" id="openTabBtn">open in new tab</button>
+      </div>
+    </aside>
+
+    <main class="preview-pane">
+      <button type="button" class="floating-toggle" id="expandBtn" hidden>☰ controls</button>
+      <iframe id="previewFrame" title="specimen preview"></iframe>
+    </main>
+  </div>
+  <div class="page-drop-overlay" id="pageDropOverlay" aria-hidden="true">drop font file</div>
+
+  <script src="app.js"></script>
+</body>
+
+</html>
